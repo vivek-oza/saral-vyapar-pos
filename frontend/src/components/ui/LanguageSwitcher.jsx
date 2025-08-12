@@ -40,7 +40,7 @@ const LanguageSwitcher = () => {
                     />
 
                     {/* Dropdown */}
-                    <div className="absolute top-full right-0 z-50 mt-2 w-48 rounded-md bg-white border shadow-lg">
+                    <div className="absolute top-full right-0 z-50 mt-3.5 w-48 rounded-md bg-white border shadow-lg">
                         <div className="p-2">
                             <div className="text-sm font-medium text-gray-600 px-2 py-1 border-b mb-2">
                                 {t('common.selectLanguage')}

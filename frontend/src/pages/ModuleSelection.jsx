@@ -112,28 +112,28 @@ const ModuleSelection = () => {
                         return (
                             <Card
                                 key={module.id}
-                                className={`cursor-pointer transition-all aspect-square w-[250px] duration-200 ${module.color} hover:shadow-lg hover:scale-105`}
+                                className={`cursor-pointer flex items-center justify-center transition-all aspect-square w-[325px] duration-200 ${module.color} hover:shadow-lg hover:scale-105`}
                                 onClick={() => handleModuleClick(module.route)}
                             >
                                 <CardHeader className="pb-4">
-                                    <div className="flex items-center space-x-3">
+                                    <div className="flex justify-center flex-col space-y-7 text-center items-center space-x-3">
                                         <div className={`p-2 rounded-lg bg-white shadow-sm`}>
-                                            <IconComponent className={`h-6 w-6 ${module.iconColor}`} />
+                                            <IconComponent className={`h-6 w-6 md:w-12 md:h-12 ${module.iconColor}`} />
                                         </div>
-                                        <CardTitle className="text-lg font-semibold text-gray-900">
+                                        <CardTitle className="md:text-3xl text-2xl font-semibold text-gray-900">
                                             {module.title}
                                         </CardTitle>
                                     </div>
                                 </CardHeader>
-                                <CardContent>
-                                    <CardDescription className="text-gray-600 text-sm leading-relaxed">
+                                {/* <CardContent> */}
+                                {/* <CardDescription className="text-gray-600 text-sm leading-relaxed">
                                         {module.description}
-                                    </CardDescription>
-                                    <div className="mt-4 flex items-center text-sm font-medium text-gray-700">
-                                        {/* Open Module */}
-                                        {/* <ArrowRight className="ml-2 h-4 w-4" /> */}
-                                    </div>
-                                </CardContent>
+                                    </CardDescription> */}
+                                {/* <div className="mt-4 flex items-center text-sm font-medium text-gray-700"> */}
+                                {/* Open Module */}
+                                {/* <ArrowRight className="ml-2 h-4 w-4" /> */}
+                                {/* </div> */}
+                                {/* </CardContent> */}
                             </Card>
                         )
                     })}

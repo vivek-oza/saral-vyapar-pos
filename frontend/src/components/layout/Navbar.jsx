@@ -18,6 +18,7 @@ import {
     Settings,
     User
 } from 'lucide-react';
+import RotatingText from '../ui/RotatingText';
 
 const Navbar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -106,6 +107,14 @@ const Navbar = () => {
             description: t('desc.settings')
         }
     ];
+    // Language texts with colors for rotating display
+    const languageTexts = [
+        'Language',  // English
+        'भाषा',      // Hindi
+        'ભાષા',      // Gujarati
+        'भाषा',      // Marathi
+        'ಭಾಷೆ'       // Kannada
+    ];
 
     const isCurrentPath = (path) => {
         return location.pathname === path;
@@ -135,20 +144,39 @@ const Navbar = () => {
 
                             {/* Logo */}
                             <div className="flex items-center">
-                                {/* <img
-                                    src="/saral_logo_favicon.png"
+                                <img
+                                    src="\public\saral_logo_favicon.png"
                                     alt="Saral Vyapar"
                                     className="h-8 w-auto mr-2"
-                                /> */}
+                                />
                                 <h1 className="text-xl font-semibold hidden sm:block">Saral Vyapar</h1>
                                 <h1 className="text-lg font-semibold sm:hidden">Saral</h1>
                             </div>
                         </div>
 
                         {/* Right side - Language switcher and user dropdown */}
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-8">
                             {/* Language Switcher */}
-                            <LanguageSwitcher />
+                            <div className="flex flex-row-reverse p-1 h-12 bg-gray-100 rounded-full justify-center items-center">
+                                <LanguageSwitcher />
+                                <RotatingText
+                                    texts={languageTexts}
+                                    rotationInterval={4000}
+                                    splitBy="characters"
+                                    staggerDuration={0.01}
+                                    mainClassName="text-sm font-semibold text-blue-600 h-8 flex items-center justify-center min-w-[80px]"
+                                    animatePresenceMode="wait"
+                                    transition={{
+                                        type: "spring",
+                                        damping: 20,
+                                        stiffness: 200,
+                                        duration: 0.4
+                                    }}
+                                    initial={{ y: 20, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    exit={{ y: -20, opacity: 0 }}
+                                />
+                            </div>
                             {/* <div className="text-right hidden sm:block">
                                 <div className="text-sm font-medium">{user?.shop?.name || 'Shop'}</div>
                                 <div className="text-xs text-muted-foreground">{user?.email}</div>
@@ -167,7 +195,7 @@ const Navbar = () => {
                                 onClick={handleDropdownToggle}
                                 // variant="outline"
                                 size="sm"
-                                className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full"
+                                className="h-12 w-12 bg-gray-100 hover:bg-gray-200 rounded-full"
                                 aria-label="Toggle dropdown"
                             >
                                 <User className="h-5 w-5 text-black" />
@@ -175,7 +203,7 @@ const Navbar = () => {
 
                             {/* Dropdown Menu */}
                             {isDropdownOpen && (
-                                <div className="absolute flex flex-col space-y-4 top-full right-4 z-50 mt-2 w-48 rounded-md bg-card p-2 shadow-md">
+                                <div className="absolute border flex flex-col space-y-4 top-14 right-4 z-50 mt-2 w-48 rounded-md bg-card p-2 shadow-md">
                                     <div className="text-sm font-medium">{t('nav.welcome')}, {user?.email}</div>
                                     <Button
                                         onClick={handleLogout}
