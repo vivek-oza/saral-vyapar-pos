@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
+import { useLanguage } from '../../contexts/LanguageContext'
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
@@ -16,19 +17,20 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false)
 
   const { login } = useAuth()
+  const { t } = useLanguage()
   const navigate = useNavigate()
 
   const validateForm = () => {
     const newErrors = {}
 
     if (!formData.email) {
-      newErrors.email = 'Email is required'
+      newErrors.email = t('common.email') + ' is required'
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid'
+      newErrors.email = t('common.email') + ' is invalid'
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required'
+      newErrors.password = t('common.password') + ' is required'
     }
 
     setErrors(newErrors)
@@ -85,9 +87,9 @@ const LoginForm = () => {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        {/* <CardTitle>Welcome Back</CardTitle> */}
+        <CardTitle>{t('auth.loginTitle')}</CardTitle>
         <CardDescription>
-          {/* Sign in to your account to continue */}
+          {t('auth.loginSubtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -100,7 +102,7 @@ const LoginForm = () => {
 
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium">
-              Email
+              {t('common.email')}
             </label>
             <Input
               type="email"
@@ -108,7 +110,7 @@ const LoginForm = () => {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              placeholder="Enter your email"
+              placeholder={t('auth.enterEmail')}
               className={errors.email ? "border-destructive" : ""}
               disabled={loading}
             />
@@ -119,7 +121,7 @@ const LoginForm = () => {
 
           <div className="space-y-2">
             <label htmlFor="password" className="text-sm font-medium">
-              Password
+              {t('common.password')}
             </label>
             <div className="relative">
               <Input
@@ -128,7 +130,7 @@ const LoginForm = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                placeholder="Enter your password"
+                placeholder={t('auth.enterPassword')}
                 className={errors.password ? "border-destructive pr-10" : "pr-10"}
                 disabled={loading}
               />
@@ -151,17 +153,19 @@ const LoginForm = () => {
           </div>
 
           <Button type="submit" disabled={loading} className="w-full">
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? t('common.login') + '...' : t('common.login')}
           </Button>
 
           <div className="text-center space-y-2">
-            <Link to="/forgot-password" className="text-sm text-primary hover:underline">
-              Forgot your password?
-            </Link>
+            <p>
+              <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                {t('common.forgotPassword')}
+              </Link>
+            </p>
             <p className="text-sm text-muted-foreground">
-              Don't have an account?{' '}
+              {t('common.dontHaveAccount')}{' '}
               <Link to="/signup" className="text-primary hover:underline font-medium">
-                Sign up here
+                {t('common.signUpHere')}
               </Link>
             </p>
           </div>

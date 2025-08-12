@@ -50,19 +50,19 @@ const PasswordStrengthIndicator = ({ password }) => {
             <div className="text-xs text-muted-foreground">
                 <div className="grid grid-cols-2 gap-1">
                     <div className={strength.checks.length ? 'text-green-600' : 'text-gray-400'}>
-                        ✓ At least 8 characters
+                        ✅ At least 8 characters
                     </div>
                     <div className={strength.checks.lowercase ? 'text-green-600' : 'text-gray-400'}>
-                        ✓ Lowercase letter
+                        ✅ Lowercase letter
                     </div>
                     <div className={strength.checks.uppercase ? 'text-green-600' : 'text-gray-400'}>
-                        ✓ Uppercase letter
+                        ✅ Uppercase letter
                     </div>
                     <div className={strength.checks.number ? 'text-green-600' : 'text-gray-400'}>
-                        ✓ Number
+                        ✅ Number
                     </div>
                     <div className={strength.checks.special ? 'text-green-600' : 'text-gray-400'}>
-                        ✓ Special character
+                        ✅ Special character
                     </div>
                 </div>
             </div>

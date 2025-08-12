@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { useLanguage } from '../contexts/LanguageContext'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button"
 import Layout from '../components/layout/Layout'
@@ -16,12 +17,13 @@ import {
 const ModuleSelection = () => {
     const navigate = useNavigate()
     const { user } = useAuth()
+    const { t, getCurrentLanguage } = useLanguage()
 
     const modules = [
         {
             id: 'product-management',
-            title: 'Product Management',
-            description: 'Manage categories, add products, edit and organize your catalog',
+            title: t('nav.products'),
+            description: t('desc.products'),
             icon: Package,
             color: 'bg-blue-50 border-blue-200 hover:bg-blue-100',
             iconColor: 'text-blue-600',
@@ -29,8 +31,8 @@ const ModuleSelection = () => {
         },
         {
             id: 'inventory-view',
-            title: 'Inventory View',
-            description: 'Track stock levels, manage inventory and get low stock alerts',
+            title: t('nav.inventory'),
+            description: t('desc.inventory'),
             icon: Warehouse,
             color: 'bg-green-50 border-green-200 hover:bg-green-100',
             iconColor: 'text-green-600',
@@ -38,8 +40,8 @@ const ModuleSelection = () => {
         },
         {
             id: 'billing-view',
-            title: 'Billing View',
-            description: 'Create bills, process payments and manage transactions',
+            title: t('nav.billing'),
+            description: t('desc.billing'),
             icon: Receipt,
             color: 'bg-purple-50 border-purple-200 hover:bg-purple-100',
             iconColor: 'text-purple-600',
@@ -47,8 +49,8 @@ const ModuleSelection = () => {
         },
         {
             id: 'reports-analytics',
-            title: 'Reports & Analytics',
-            description: 'View sales reports, analytics and business insights',
+            title: t('nav.reports'),
+            description: t('desc.reports'),
             icon: BarChart3,
             color: 'bg-orange-50 border-orange-200 hover:bg-orange-100',
             iconColor: 'text-orange-600',
@@ -56,8 +58,8 @@ const ModuleSelection = () => {
         },
         {
             id: 'mobile-pos',
-            title: 'Mobile POS',
-            description: 'Access POS features optimized for mobile devices',
+            title: t('nav.mobilePOS'),
+            description: t('desc.mobilePOS'),
             icon: Smartphone,
             color: 'bg-pink-50 border-pink-200 hover:bg-pink-100',
             iconColor: 'text-pink-600',
@@ -65,8 +67,8 @@ const ModuleSelection = () => {
         },
         {
             id: 'shop-settings',
-            title: 'Shop Settings',
-            description: 'Manage shop information and configuration settings',
+            title: t('nav.settings'),
+            description: t('desc.settings'),
             icon: Settings,
             color: 'bg-gray-50 border-gray-200 hover:bg-gray-100',
             iconColor: 'text-gray-600',
@@ -88,29 +90,29 @@ const ModuleSelection = () => {
                 {/* Header */}
                 <div className="text-center mb-8">
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-                        Welcome to {user?.shop?.name || 'Your Shop'}
+                        {t('nav.welcome')} to {user?.shop?.name || 'Your Shop'}
                     </h1>
                     <p className="text-gray-600 mb-6 px-4">
-                        Choose a module to get started with managing your business
+                        {t('desc.chooseModule')}
                     </p>
                     <Button
                         variant="outline"
                         onClick={handleGoToDashboard}
                         className="mb-8"
                     >
-                        <span className="hidden xs:inline">Go to </span>Full Dashboard
-                        <ArrowRight className="ml-2 h-4 w-4" />
+                        <span className="hidden xs:inline">{t('common.goTo')} </span>{t('nav.dashboard')}
+                        {/* <ArrowRight className="ml-2 h-4 w-4" /> */}
                     </Button>
                 </div>
 
                 {/* Bento Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
+                <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
                     {modules.map((module) => {
                         const IconComponent = module.icon
                         return (
                             <Card
                                 key={module.id}
-                                className={`cursor-pointer transition-all duration-200 ${module.color} hover:shadow-lg hover:scale-105`}
+                                className={`cursor-pointer transition-all aspect-square w-[250px] duration-200 ${module.color} hover:shadow-lg hover:scale-105`}
                                 onClick={() => handleModuleClick(module.route)}
                             >
                                 <CardHeader className="pb-4">
@@ -128,8 +130,8 @@ const ModuleSelection = () => {
                                         {module.description}
                                     </CardDescription>
                                     <div className="mt-4 flex items-center text-sm font-medium text-gray-700">
-                                        Open Module
-                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                        {/* Open Module */}
+                                        {/* <ArrowRight className="ml-2 h-4 w-4" /> */}
                                     </div>
                                 </CardContent>
                             </Card>
@@ -139,7 +141,7 @@ const ModuleSelection = () => {
 
                 {/* Footer */}
                 <div className="text-center mt-12 text-gray-500 text-sm">
-                    <p>Need help getting started? Check out our user guide or contact support.</p>
+                    <p>{t('common.needHelp')}</p>
                 </div>
             </div>
         </Layout>

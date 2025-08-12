@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
+import LanguageSwitcher from '../ui/LanguageSwitcher';
 import {
     LogOut,
     Menu,
@@ -13,14 +15,21 @@ import {
     Smartphone,
     LayoutDashboard,
     Grid3X3,
-    Settings
+    Settings,
+    User
 } from 'lucide-react';
 
 const Navbar = () => {
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const { user, logout } = useAuth();
+    const { t } = useLanguage();
     const navigate = useNavigate();
     const location = useLocation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const handleDropdownToggle = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
 
     const handleLogout = () => {
         logout();
@@ -42,59 +51,59 @@ const Navbar = () => {
     const menuItems = [
         {
             id: 'modules',
-            title: 'Module Selection',
+            title: t('nav.moduleSelection'),
             icon: Grid3X3,
             path: `/${user?.shop?.username}/modules`,
-            description: 'Choose a module to work with'
+            description: t('desc.moduleSelection')
         },
         {
             id: 'dashboard',
-            title: 'Dashboard',
+            title: t('nav.dashboard'),
             icon: LayoutDashboard,
             path: `/${user?.shop?.username}/dashboard`,
-            description: 'View business overview'
+            description: t('desc.dashboard')
         },
         {
             id: 'products',
-            title: 'Product Management',
+            title: t('nav.products'),
             icon: Package,
             path: `/${user?.shop?.username}/products`,
-            description: 'Manage your product catalog'
+            description: t('desc.products')
         },
         {
             id: 'inventory',
-            title: 'Inventory View',
+            title: t('nav.inventory'),
             icon: Warehouse,
             path: `/${user?.shop?.username}/inventory`,
-            description: 'Track stock levels'
+            description: t('desc.inventory')
         },
         {
             id: 'billing',
-            title: 'Billing System',
+            title: t('nav.billing'),
             icon: Receipt,
             path: `/${user?.shop?.username}/billing`,
-            description: 'Process sales and payments'
+            description: t('desc.billing')
         },
         {
             id: 'reports',
-            title: 'Reports & Analytics',
+            title: t('nav.reports'),
             icon: BarChart3,
             path: `/${user?.shop?.username}/reports`,
-            description: 'View business insights'
+            description: t('desc.reports')
         },
         {
             id: 'mobile-pos',
-            title: 'Mobile POS',
+            title: t('nav.mobilePOS'),
             icon: Smartphone,
             path: `/${user?.shop?.username}/mobile-pos`,
-            description: 'Mobile point of sale'
+            description: t('desc.mobilePOS')
         },
         {
             id: 'settings',
-            title: 'Shop Settings',
+            title: t('nav.settings'),
             icon: Settings,
             path: `/${user?.shop?.username}/settings`,
-            description: 'Manage shop configuration'
+            description: t('desc.settings')
         }
     ];
 
@@ -126,19 +135,21 @@ const Navbar = () => {
 
                             {/* Logo */}
                             <div className="flex items-center">
-                                <img
+                                {/* <img
                                     src="/saral_logo_favicon.png"
-                                    alt="Saral Vyapar POS"
+                                    alt="Saral Vyapar"
                                     className="h-8 w-auto mr-2"
-                                />
-                                <h1 className="text-xl font-semibold hidden sm:block">Saral Vyapar POS</h1>
+                                /> */}
+                                <h1 className="text-xl font-semibold hidden sm:block">Saral Vyapar</h1>
                                 <h1 className="text-lg font-semibold sm:hidden">Saral</h1>
                             </div>
                         </div>
 
-                        {/* Right side - Shop name and logout */}
+                        {/* Right side - Language switcher and user dropdown */}
                         <div className="flex items-center space-x-4">
-                            <div className="text-right hidden sm:block">
+                            {/* Language Switcher */}
+                            <LanguageSwitcher />
+                            {/* <div className="text-right hidden sm:block">
                                 <div className="text-sm font-medium">{user?.shop?.name || 'Shop'}</div>
                                 <div className="text-xs text-muted-foreground">{user?.email}</div>
                             </div>
@@ -150,7 +161,33 @@ const Navbar = () => {
                             >
                                 <LogOut className="h-4 w-4" />
                                 <span className="hidden sm:inline">Logout</span>
+                            </Button> */}
+                            {/* Dropdown Avatar */}
+                            <Button
+                                onClick={handleDropdownToggle}
+                                // variant="outline"
+                                size="sm"
+                                className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full"
+                                aria-label="Toggle dropdown"
+                            >
+                                <User className="h-5 w-5 text-black" />
                             </Button>
+
+                            {/* Dropdown Menu */}
+                            {isDropdownOpen && (
+                                <div className="absolute flex flex-col space-y-4 top-full right-4 z-50 mt-2 w-48 rounded-md bg-card p-2 shadow-md">
+                                    <div className="text-sm font-medium">{t('nav.welcome')}, {user?.email}</div>
+                                    <Button
+                                        onClick={handleLogout}
+                                        variant="outline"
+                                        size="sm"
+                                        className="gap-2 w-full sm:w-auto"
+                                    >
+                                        <LogOut className="h-4 w-4" />
+                                        {t('nav.logout')}
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -174,7 +211,7 @@ const Navbar = () => {
                                 className="h-8 w-auto"
                             />
                             <div>
-                                <h2 className="font-semibold text-lg">Navigation</h2>
+                                <h2 className="font-semibold text-lg">{t('nav.navigation')}</h2>
                                 <p className="text-sm text-muted-foreground">{user?.shop?.name}</p>
                             </div>
                         </div>
@@ -218,11 +255,12 @@ const Navbar = () => {
                         </div>
                     </div>
 
+
                     {/* Menu Footer */}
                     <div className="p-4 border-t">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <div className="text-sm text-muted-foreground truncate">
-                                Logged in as {user?.email}
+                                {t('nav.loggedInAs')} {user?.email}
                             </div>
                             <Button
                                 onClick={handleLogout}
@@ -231,7 +269,7 @@ const Navbar = () => {
                                 className="gap-2 w-full sm:w-auto"
                             >
                                 <LogOut className="h-4 w-4" />
-                                Logout
+                                {t('nav.logout')}
                             </Button>
                         </div>
                     </div>

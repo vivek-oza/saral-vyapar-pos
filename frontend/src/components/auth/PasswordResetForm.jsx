@@ -258,7 +258,7 @@ const PasswordResetForm = ({
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>Reset Your Password</CardTitle>
-        <CardDescription>Enter your new password below</CardDescription>
+        {/* <CardDescription>Enter your new password below</CardDescription> */}
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">

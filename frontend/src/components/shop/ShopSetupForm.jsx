@@ -105,7 +105,7 @@ const ShopSetupForm = ({ onSubmit, onBack, loading = false }) => {
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
-                            placeholder="Enter your shop name"
+                            // placeholder="Enter your shop name"
                             className={errors.name ? "border-destructive" : ""}
                             disabled={loading}
                         />
@@ -151,7 +151,7 @@ const ShopSetupForm = ({ onSubmit, onBack, loading = false }) => {
                             name="address"
                             value={formData.address}
                             onChange={handleInputChange}
-                            placeholder="Enter your shop address"
+                            // placeholder="Enter your shop address"
                             className={errors.address ? "border-destructive" : ""}
                             disabled={loading}
                         />

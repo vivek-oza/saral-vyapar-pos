@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useLanguage } from "../../contexts/LanguageContext";
 import ShopSetupForm from "../shop/ShopSetupForm";
 import OTPVerification from "./OTPVerification";
 import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
@@ -31,21 +32,22 @@ const SignupForm = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { signup, login, refreshUser } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const validateForm = () => {
     const newErrors = {};
 
     if (!formData.email) {
-      newErrors.email = "Email is required";
+      newErrors.email = t('common.email') + " is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
+      newErrors.email = t('common.email') + " is invalid";
     }
 
     if (!formData.password) {
-      newErrors.password = "Password is required";
+      newErrors.password = t('common.password') + " is required";
     } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters long";
+      newErrors.password = t('common.password') + " must be at least 8 characters long";
     }
 
     if (formData.password !== formData.confirmPassword) {
@@ -84,8 +86,7 @@ const SignupForm = () => {
       // Create user account
       const normalizedEmail = formData.email.trim().toLowerCase();
       const response = await fetch(
-        `${
-          import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+        `${import.meta.env.VITE_API_URL || "http://localhost:5000/api"
         }/auth/signup`,
         {
           method: "POST",
@@ -148,7 +149,7 @@ const SignupForm = () => {
         // After creating the shop, refresh user so it includes shop
         try {
           await refreshUser();
-        } catch (_) {}
+        } catch (_) { }
         navigate(`/${shopFormData.username}/modules`);
       } else {
         setErrors({ general: shopData.error });
@@ -165,8 +166,7 @@ const SignupForm = () => {
     try {
       setOtpServerError("");
       const response = await fetch(
-        `${
-          import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+        `${import.meta.env.VITE_API_URL || "http://localhost:5000/api"
         }/auth/verify-otp`,
         {
           method: "POST",
@@ -197,8 +197,7 @@ const SignupForm = () => {
 
   const handleResendOTP = async () => {
     const response = await fetch(
-      `${
-        import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+      `${import.meta.env.VITE_API_URL || "http://localhost:5000/api"
       }/auth/resend-otp`,
       {
         method: "POST",
@@ -255,9 +254,9 @@ const SignupForm = () => {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>Create Account</CardTitle>
+        <CardTitle>{t('auth.signupTitle')}</CardTitle>
         <CardDescription>
-          Enter your details to create your account
+          {t('auth.signupSubtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -270,7 +269,7 @@ const SignupForm = () => {
 
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium">
-              Email
+              {t('common.email')}
             </label>
             <Input
               type="email"
@@ -278,7 +277,7 @@ const SignupForm = () => {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              placeholder="Enter your email"
+              placeholder={t('auth.enterEmail')}
               className={errors.email ? "border-destructive" : ""}
             />
             {errors.email && (
@@ -288,7 +287,7 @@ const SignupForm = () => {
 
           <div className="space-y-2">
             <label htmlFor="password" className="text-sm font-medium">
-              Password *
+              {t('common.password')}
             </label>
             <div className="relative">
               <Input
@@ -297,7 +296,7 @@ const SignupForm = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                placeholder="Enter your password"
+                placeholder={t('auth.enterPassword')}
                 className={
                   errors.password ? "border-destructive pr-10" : "pr-10"
                 }
@@ -322,7 +321,7 @@ const SignupForm = () => {
 
           <div className="space-y-2">
             <label htmlFor="confirmPassword" className="text-sm font-medium">
-              Confirm Password
+              {t('common.confirmPassword')}
             </label>
             <div className="relative">
               <Input
@@ -331,7 +330,7 @@ const SignupForm = () => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                placeholder="Confirm your password"
+                placeholder={t('auth.enterConfirmPassword')}
                 className={
                   errors.confirmPassword ? "border-destructive pr-10" : "pr-10"
                 }
@@ -356,16 +355,16 @@ const SignupForm = () => {
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Creating Account..." : "Create Account"}
+            {loading ? t('common.createAccount') + "..." : t('common.createAccount')}
           </Button>
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              Already have an account?{" "}
+              {t('common.alreadyHaveAccount')}{" "}
               <Link
                 to="/login"
                 className="text-primary hover:underline font-medium"
               >
-                Login here
+                {t('common.signInHere')}
               </Link>
             </p>
           </div>
