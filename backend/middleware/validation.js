@@ -48,7 +48,7 @@ const validateSignup = [
     .normalizeEmail()
     .withMessage('Please provide a valid email address'),
   body('password')
-    .isLength({ min: 8 }) // was 6
+    .isLength({ min: 8 })
     .withMessage('Password must be at least 8 characters long'),
   handleValidationErrors
 ];
@@ -128,7 +128,7 @@ const validateShopCreation = [
 // -- changed by cursor --
 const validatePasswordReset = [
   body('password')
-    .isLength({ min: 8 }) // was 6
+    .isLength({ min: 8 })
     .withMessage('Password must be at least 8 characters long'),
   body('confirmPassword')
     .custom((value, { req }) => {

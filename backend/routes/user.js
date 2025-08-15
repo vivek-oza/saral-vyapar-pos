@@ -35,7 +35,7 @@ const validateProfileUpdate = [
 router.get('/profile', auth, async (req, res) => {
   try {
     const profile = await getQuery('SELECT * FROM user_profiles WHERE user_id = ?', [req.user.id]);
-    
+
     if (!profile) {
       return res.json({
         success: true,
@@ -126,10 +126,8 @@ router.put('/change-password', auth, [
     .notEmpty()
     .withMessage('Current password is required'),
   body('newPassword')
-    .isLength({ min: 6 })
-    .withMessage('New password must be at least 6 characters long'),
-    // .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-    // .withMessage('New password must contain at least one uppercase letter, one lowercase letter, and one number'),
+    .isLength({ min: 8 })
+    .withMessage('New password must be at least 8 characters long'),
   body('confirmPassword')
     .custom((value, { req }) => {
       if (value !== req.body.newPassword) {
@@ -145,11 +143,11 @@ router.put('/change-password', auth, [
 
     // Get current password hash
     const user = await getQuery('SELECT password_hash FROM users WHERE id = ?', [userId]);
-    
+
     // Verify current password
     const bcrypt = require('bcryptjs');
     const isValidPassword = await bcrypt.compare(currentPassword, user.password_hash);
-    
+
     if (!isValidPassword) {
       return res.status(400).json({ error: 'Current password is incorrect' });
     }

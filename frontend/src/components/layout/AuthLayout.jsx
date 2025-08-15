@@ -43,8 +43,8 @@ const AuthLayout = ({ children }) => {
 
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl tracking-wide font-bold text-gray-900">SARAL VYAPAR</h1>
-                    <p className="mt-2 text-sm text-gray-600">{t('common.getStarted')}</p>
+                    {/* <h1 className="text-3xl tracking-wide font-bold text-gray-900">SARAL VYAPAR</h1> */}
+                    {/* <p className="mt-2 text-sm text-gray-600">{t('common.getStarted')}</p> */}
                 </div>
                 {children}
             </div>

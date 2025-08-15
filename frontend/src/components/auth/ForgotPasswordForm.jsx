@@ -77,9 +77,9 @@ const ForgotPasswordForm = ({ onSubmit, loading: propLoading, error: propError }
         return (
             <Card className="w-full max-w-md mx-auto">
                 <CardHeader className="text-center">
-                    <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                    {/* <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                         <Mail className="h-6 w-6 text-green-600" />
-                    </div>
+                    </div> */}
                     <CardTitle>Check Your Email</CardTitle>
                     <CardDescription>
                         We've sent a reset code to {email}
@@ -92,7 +92,7 @@ const ForgotPasswordForm = ({ onSubmit, loading: propLoading, error: propError }
                     </div>
                     <Link to="/login">
                         <Button variant="outline" className="w-full">
-                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            {/* <ArrowLeft className="h-4 w-4 mr-2" /> */}
                             Back to Login
                         </Button>
                     </Link>
@@ -126,7 +126,7 @@ const ForgotPasswordForm = ({ onSubmit, loading: propLoading, error: propError }
                             id="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Enter your email address"
+                            // placeholder="Enter your email address"
                             className={(error || propError) ? "border-destructive" : ""}
                             disabled={loading || propLoading}
                         />
@@ -138,7 +138,7 @@ const ForgotPasswordForm = ({ onSubmit, loading: propLoading, error: propError }
 
                     <div className="text-center">
                         <Link to="/login" className="text-sm text-muted-foreground hover:text-primary">
-                            <ArrowLeft className="h-4 w-4 inline mr-1" />
+                            {/* <ArrowLeft className="h-4 w-4 inline mr-1" /> */}
                             Back to Login
                         </Link>
                     </div>

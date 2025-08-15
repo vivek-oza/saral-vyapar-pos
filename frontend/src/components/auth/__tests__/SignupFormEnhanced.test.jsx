@@ -22,7 +22,7 @@ describe('SignupForm Enhanced Password Validation', () => {
         jest.restoreAllMocks();
     });
 
-    test('displays password strength indicator when password is entered', async () => {
+    test('displays password length indicator when password is entered', async () => {
         render(
             <MockAuthProvider>
                 <SignupForm />
@@ -31,12 +31,12 @@ describe('SignupForm Enhanced Password Validation', () => {
 
         const passwordInput = screen.getByLabelText(/password \*/i);
 
-        // Enter a weak password
-        fireEvent.change(passwordInput, { target: { value: 'weak' } });
+        // Enter a short password
+        fireEvent.change(passwordInput, { target: { value: 'short' } });
 
-        // Should show password strength indicator
+        // Should show password length indicator
         await waitFor(() => {
-            expect(screen.getByText(/weak/i)).toBeInTheDocument();
+            expect(screen.getByText(/at least 8 characters/i)).toBeInTheDocument();
         });
     });
 
@@ -52,10 +52,10 @@ describe('SignupForm Enhanced Password Validation', () => {
         const confirmPasswordInput = screen.getByLabelText(/confirm password \*/i);
         const submitButton = screen.getByRole('button', { name: /create account/i });
 
-        // Fill form with short password
+        // Fill form with short password (7 characters)
         fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-        fireEvent.change(passwordInput, { target: { value: 'short' } });
-        fireEvent.change(confirmPasswordInput, { target: { value: 'short' } });
+        fireEvent.change(passwordInput, { target: { value: 'short12' } });
+        fireEvent.change(confirmPasswordInput, { target: { value: 'short12' } });
 
         fireEvent.click(submitButton);
 
@@ -65,7 +65,7 @@ describe('SignupForm Enhanced Password Validation', () => {
         });
     });
 
-    test('shows strong password indicator for complex password', async () => {
+    test('shows valid password indicator for 8+ character password', async () => {
         render(
             <MockAuthProvider>
                 <SignupForm />
@@ -74,12 +74,12 @@ describe('SignupForm Enhanced Password Validation', () => {
 
         const passwordInput = screen.getByLabelText(/password \*/i);
 
-        // Enter a strong password
-        fireEvent.change(passwordInput, { target: { value: 'StrongPass123!' } });
+        // Enter a valid password (8+ characters)
+        fireEvent.change(passwordInput, { target: { value: 'password123' } });
 
-        // Should show strong password indicator
+        // Should show valid password indicator
         await waitFor(() => {
-            expect(screen.getByText(/strong/i)).toBeInTheDocument();
+            expect(screen.getByText(/✅.*at least 8 characters/i)).toBeInTheDocument();
         });
     });
 
@@ -97,8 +97,8 @@ describe('SignupForm Enhanced Password Validation', () => {
 
         // Fill form with mismatched passwords
         fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-        fireEvent.change(passwordInput, { target: { value: 'StrongPass123!' } });
-        fireEvent.change(confirmPasswordInput, { target: { value: 'DifferentPass123!' } });
+        fireEvent.change(passwordInput, { target: { value: 'password123' } });
+        fireEvent.change(confirmPasswordInput, { target: { value: 'different123' } });
 
         fireEvent.click(submitButton);
 

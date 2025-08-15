@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import Layout from "../components/layout/Layout";
+import { normalizeBusinessTypeForDisplay } from "../utils/businessTypeUtils";
 import {
   ArrowLeft,
   Settings,
@@ -18,6 +19,7 @@ import {
   Phone,
   Mail,
   Calendar,
+  Building2,
 } from "lucide-react";
 
 const ShopSettings = () => {
@@ -30,13 +32,20 @@ const ShopSettings = () => {
 
   const shopDetails = [
     {
-      label: "Shop Name",
+      label: "Business Name",
       value: user?.shop?.name || "Not set",
       icon: Store,
       color: "text-blue-600",
     },
     {
-      label: "Shop Username",
+      label: "Business Type",
+      value: normalizeBusinessTypeForDisplay(user?.shop?.business_type) || "Not set",
+      icon: Building2,
+      color: "text-green-600",
+      badge: true,
+    },
+    {
+      label: "Business Username",
       value: user?.shop?.username || "Not set",
       icon: Settings,
       color: "text-green-600",
@@ -84,13 +93,13 @@ const ShopSettings = () => {
             onClick={handleBackToModules}
             className="w-fit"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            {/* <ArrowLeft className="mr-2 h-4 w-4" /> */}
             <span className="hidden xs:inline">Back to </span>Modules
           </Button>
           <div className="flex items-center">
-            <Settings className="mr-3 h-6 w-6 text-gray-600" />
+            {/* <Settings className="mr-3 h-6 w-6 text-gray-600" /> */}
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-              Shop Settings
+              Business Settings
             </h1>
           </div>
         </div>
@@ -99,11 +108,11 @@ const ShopSettings = () => {
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Store className="h-5 w-5 text-blue-600" />
-              Current Shop Details
+              {/* <Store className="h-5 w-5 text-blue-600" /> */}
+              Current Business Details
             </CardTitle>
             <CardDescription>
-              View your shop information and settings
+              View your business information and settings
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -116,15 +125,21 @@ const ShopSettings = () => {
                     className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg"
                   >
                     <div className="flex-shrink-0">
-                      <IconComponent className={`h-5 w-5 ${detail.color}`} />
+                      {/* <IconComponent className={`h-5 w-5 ${detail.color}`} /> */}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900">
                         {detail.label}
                       </p>
-                      <p className="text-sm text-gray-600 break-words">
-                        {detail.value}
-                      </p>
+                      {detail.badge && detail.value !== "Not set" ? (
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {detail.value}
+                        </span>
+                      ) : (
+                        <p className="text-sm text-gray-600 break-words">
+                          {detail.value}
+                        </p>
+                      )}
                     </div>
                   </div>
                 );
@@ -134,7 +149,7 @@ const ShopSettings = () => {
         </Card>
 
         {/* Coming Soon Features */}
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Settings className="h-5 w-5 text-gray-600" />
@@ -147,7 +162,7 @@ const ShopSettings = () => {
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {[
-                "Edit Shop Information",
+                "Edit Business Information",
                 "Business Hours Configuration",
                 "Tax Settings & Rates",
                 "Currency & Regional Settings",
@@ -167,19 +182,19 @@ const ShopSettings = () => {
               ))}
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Footer Note */}
         <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex items-start space-x-3">
-            <Settings className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+            {/* <Settings className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" /> */}
             <div>
               <h3 className="text-sm font-medium text-blue-900">
                 Settings Module Development
               </h3>
               <p className="text-sm text-blue-700 mt-1">
-                This module currently displays your shop information. Advanced
-                settings like editing shop details, configuring business hours,
+                This module currently displays your business information. Advanced
+                settings like editing business details, configuring business hours,
                 managing users, and customizing preferences will be implemented
                 in future updates.
               </p>

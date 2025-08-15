@@ -1,15 +1,16 @@
-import express, { json, urlencoded } from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import path from 'path';
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const path = require('path');
 require('dotenv').config();
 
-import authRoutes from './routes/auth';
-import shopRoutes from './routes/shop';
-import userRoutes from './routes/user';
-import productRoutes from './routes/products';
-import categoryRoutes from './routes/categories';
+const authRoutes = require('./routes/auth');
+const shopRoutes = require('./routes/shop');
+const userRoutes = require('./routes/user');
+const productRoutes = require('./routes/products');
+const categoryRoutes = require('./routes/categories');
+const serviceBillRoutes = require('./routes/service-bills');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,15 +18,12 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
-    'https://saral-vyapar-pos.vercel.app'
-  ],
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true
 }));
 app.use(morgan('combined'));
-app.use(json({ limit: '10mb' }));
-app.use(urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -33,6 +31,7 @@ app.use('/api/shop', shopRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/service-bills', serviceBillRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -59,4 +58,4 @@ app.listen(PORT, () => {
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
-export default app;
+module.exports = app;

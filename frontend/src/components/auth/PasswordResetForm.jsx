@@ -217,7 +217,7 @@ const PasswordResetForm = ({
       <Card className="w-full max-w-md mx-auto">
         <CardHeader className="text-center">
           <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-            <CheckCircle className="h-6 w-6 text-green-600" />
+            {/* <CheckCircle className="h-6 w-6 text-green-600" /> */}
           </div>
           <CardTitle>Password Reset Successful</CardTitle>
           <CardDescription>
@@ -291,11 +291,11 @@ const PasswordResetForm = ({
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={loading}
               >
-                {showPassword ? (
+                {/* {showPassword ? (
                   <EyeOff className="h-4 w-4" />
                 ) : (
                   <Eye className="h-4 w-4" />
-                )}
+                )} */}
               </Button>
             </div>
             <PasswordStrengthIndicator password={formData.password} />
@@ -324,11 +324,11 @@ const PasswordResetForm = ({
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 disabled={loading}
               >
-                {showConfirmPassword ? (
+                {/* {showConfirmPassword ? (
                   <EyeOff className="h-4 w-4" />
                 ) : (
                   <Eye className="h-4 w-4" />
-                )}
+                )} */}
               </Button>
             </div>
           </div>
@@ -346,7 +346,7 @@ const PasswordResetForm = ({
                 disabled={loading}
                 className="text-sm"
               >
-                <ArrowLeft className="h-4 w-4 mr-2" />
+                {/* <ArrowLeft className="h-4 w-4 mr-2" /> */}
                 Back to OTP
               </Button>
             </div>

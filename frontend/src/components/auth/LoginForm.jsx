@@ -88,9 +88,9 @@ const LoginForm = () => {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>{t('auth.loginTitle')}</CardTitle>
-        <CardDescription>
+        {/* <CardDescription>
           {t('auth.loginSubtitle')}
-        </CardDescription>
+        </CardDescription> */}
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -110,7 +110,7 @@ const LoginForm = () => {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              placeholder={t('auth.enterEmail')}
+              // placeholder={t('auth.enterEmail')}
               className={errors.email ? "border-destructive" : ""}
               disabled={loading}
             />
@@ -130,7 +130,7 @@ const LoginForm = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                placeholder={t('auth.enterPassword')}
+                // placeholder={t('auth.enterPassword')}
                 className={errors.password ? "border-destructive pr-10" : "pr-10"}
                 disabled={loading}
               />
@@ -140,11 +140,11 @@ const LoginForm = () => {
                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 disabled={loading}
               >
-                {showPassword ? (
+                {/* {showPassword ? (
                   <EyeOff className="h-4 w-4 text-gray-400" />
                 ) : (
                   <Eye className="h-4 w-4 text-gray-400" />
-                )}
+                )} */}
               </button>
             </div>
             {errors.password && (

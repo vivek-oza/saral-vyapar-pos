@@ -255,9 +255,9 @@ const SignupForm = () => {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>{t('auth.signupTitle')}</CardTitle>
-        <CardDescription>
+        {/* <CardDescription>
           {t('auth.signupSubtitle')}
-        </CardDescription>
+        </CardDescription> */}
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -277,7 +277,7 @@ const SignupForm = () => {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              placeholder={t('auth.enterEmail')}
+              // placeholder={t('auth.enterEmail')}
               className={errors.email ? "border-destructive" : ""}
             />
             {errors.email && (
@@ -296,7 +296,7 @@ const SignupForm = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                placeholder={t('auth.enterPassword')}
+                // placeholder={t('auth.enterPassword')}
                 className={
                   errors.password ? "border-destructive pr-10" : "pr-10"
                 }
@@ -306,11 +306,11 @@ const SignupForm = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
               >
-                {showPassword ? (
+                {/* {showPassword ? (
                   <EyeOff className="h-4 w-4 text-gray-400" />
                 ) : (
                   <Eye className="h-4 w-4 text-gray-400" />
-                )}
+                )} */}
               </button>
             </div>
             <PasswordStrengthIndicator password={formData.password} />
@@ -330,7 +330,7 @@ const SignupForm = () => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                placeholder={t('auth.enterConfirmPassword')}
+                // placeholder={t('auth.enterConfirmPassword')}
                 className={
                   errors.confirmPassword ? "border-destructive pr-10" : "pr-10"
                 }
@@ -340,11 +340,11 @@ const SignupForm = () => {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
               >
-                {showConfirmPassword ? (
+                {/* {showConfirmPassword ? (
                   <EyeOff className="h-4 w-4 text-gray-400" />
                 ) : (
                   <Eye className="h-4 w-4 text-gray-400" />
-                )}
+                )} */}
               </button>
             </div>
             {errors.confirmPassword && (

@@ -84,7 +84,7 @@ const PasswordResetOTPForm = ({ email, onVerify, onBack, onResend, loading }) =>
         <Card className="w-full max-w-md mx-auto">
             <CardHeader className="text-center">
                 <div className="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                    <Mail className="h-6 w-6 text-blue-600" />
+                    {/* <Mail className="h-6 w-6 text-blue-600" /> */}
                 </div>
                 <CardTitle>Enter Reset Code</CardTitle>
                 <CardDescription>
@@ -94,7 +94,7 @@ const PasswordResetOTPForm = ({ email, onVerify, onBack, onResend, loading }) =>
 
                 {/* Timer display */}
                 <div className="flex items-center justify-center mt-4 p-2 bg-blue-50 rounded-lg">
-                    <Clock className="h-4 w-4 text-blue-600 mr-2" />
+                    {/* <Clock className="h-4 w-4 text-blue-600 mr-2" /> */}
                     <span className={`text-sm font-medium ${timeLeft < 60 ? 'text-red-600' : 'text-blue-600'}`}>
                         Code expires in: {formatTime(timeLeft)}
                     </span>
@@ -153,7 +153,7 @@ const PasswordResetOTPForm = ({ email, onVerify, onBack, onResend, loading }) =>
                             disabled={loading}
                             className="text-sm"
                         >
-                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            {/* <ArrowLeft className="h-4 w-4 mr-2" /> */}
                             Back to Email
                         </Button>
                     </div>

@@ -77,14 +77,14 @@ describe("SignupForm", () => {
     renderWithProviders(<SignupForm />);
 
     const passwordInput = screen.getByLabelText("Password *");
-    fireEvent.change(passwordInput, { target: { value: "123" } });
+    fireEvent.change(passwordInput, { target: { value: "1234567" } });
 
     const submitButton = screen.getByRole("button", { name: "Create Account" });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
       expect(
-        screen.getByText("Password must be at least 6 characters")
+        screen.getByText("Password must be at least 8 characters long")
       ).toBeInTheDocument();
     });
   });

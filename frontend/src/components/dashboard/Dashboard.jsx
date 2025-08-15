@@ -2,6 +2,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { Button } from '../ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import Layout from '../layout/Layout'
+import { normalizeBusinessTypeForDisplay } from '../../utils/businessTypeUtils'
 import {
   DollarSign,
   ShoppingCart,
@@ -66,9 +67,16 @@ const Dashboard = () => {
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+            <div className="flex items-center gap-3 mb-2">
+              <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+              {user?.shop?.business_type && (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                  {normalizeBusinessTypeForDisplay(user.shop.business_type)}
+                </span>
+              )}
+            </div>
             <p className="text-muted-foreground">
-              Welcome to your POS dashboard. Here's an overview of your business.
+              Welcome to your business dashboard. Here's an overview of your {normalizeBusinessTypeForDisplay(user?.shop?.business_type)?.toLowerCase() || 'business'}.
             </p>
           </div>
 
@@ -133,20 +141,32 @@ const Dashboard = () => {
           {user?.shop && (
             <Card className="mt-6">
               <CardHeader>
-                <CardTitle>Shop Information</CardTitle>
+                <CardTitle>Business Information</CardTitle>
                 <CardDescription>
-                  Your registered shop details
+                  Your registered business details
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm font-medium">Shop Name</p>
+                    <p className="text-sm font-medium">Business Name</p>
                     <p className="text-sm text-muted-foreground">{user.shop.name}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Business Type</p>
+                    <p className="text-sm text-muted-foreground">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {normalizeBusinessTypeForDisplay(user.shop.business_type) || 'Not set'}
+                      </span>
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm font-medium">Address</p>
                     <p className="text-sm text-muted-foreground">{user.shop.address}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Username</p>
+                    <p className="text-sm text-muted-foreground">/{user.shop.username}</p>
                   </div>
                   {user.shop.gst_number && (
                     <div>

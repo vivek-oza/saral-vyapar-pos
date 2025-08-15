@@ -30,7 +30,9 @@ const validateShopSetup = [
       }
     }
     return true;
-  })
+  }),
+  body('businessType').trim().isLength({ min: 1 }).withMessage('Business type is required')
+    .isIn(['Freelancer', 'Freelancer or Service', 'Retail']).withMessage('Business type must be either Freelancer, Freelancer or Service, or Retail')
 ];
 
 // Shop setup endpoint (protected route)

@@ -19,11 +19,11 @@ const ShopSetupForm = ({ onSubmit, onBack, loading = false }) => {
         const newErrors = {};
 
         if (!formData.name.trim()) {
-            newErrors.name = "Shop name is required";
+            newErrors.name = "Business name is required";
         }
 
         if (!formData.username.trim()) {
-            newErrors.username = "Shop username is required";
+            newErrors.username = "Business username is required";
         } else if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
             newErrors.username = "Username can only contain letters, numbers, and underscores";
         } else if (formData.username.length < 3 || formData.username.length > 30) {
@@ -40,6 +40,10 @@ const ShopSetupForm = ({ onSubmit, onBack, loading = false }) => {
 
         if (formData.phone && !/^[6-9]\d{9}$/.test(formData.phone)) {
             newErrors.phone = "Invalid phone number format";
+        }
+
+        if (!formData.businessType.trim()) {
+            newErrors.businessType = "Business type is required";
         }
 
         setErrors(newErrors);
@@ -86,9 +90,9 @@ const ShopSetupForm = ({ onSubmit, onBack, loading = false }) => {
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div>
-                        <CardTitle>Shop Setup</CardTitle>
+                        <CardTitle>Setup your business</CardTitle>
                         <CardDescription>
-                            Set up your shop details to get started
+                            Set up your business details to get started
                         </CardDescription>
                     </div>
                 </div>
@@ -97,7 +101,7 @@ const ShopSetupForm = ({ onSubmit, onBack, loading = false }) => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
                         <label htmlFor="name" className="text-sm font-medium">
-                            Shop Name *
+                            Business Name *
                         </label>
                         <Input
                             type="text"
@@ -116,7 +120,7 @@ const ShopSetupForm = ({ onSubmit, onBack, loading = false }) => {
 
                     <div className="space-y-2">
                         <label htmlFor="username" className="text-sm font-medium">
-                            Shop Username *
+                            Business Username *
                         </label>
                         <div className="relative">
                             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">
@@ -134,7 +138,7 @@ const ShopSetupForm = ({ onSubmit, onBack, loading = false }) => {
                             />
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            Your shop will be available at: /{formData.username || 'username'}/dashboard
+                            Your business will be available at: /{formData.username || 'username'}/dashboard
                         </p>
                         {errors.username && (
                             <p className="text-destructive text-sm">{errors.username}</p>
@@ -200,17 +204,23 @@ const ShopSetupForm = ({ onSubmit, onBack, loading = false }) => {
 
                     <div className="space-y-2">
                         <label htmlFor="businessType" className="text-sm font-medium">
-                            Business Type (Optional)
+                            Business Type *
                         </label>
-                        <Input
-                            type="text"
+                        <select
                             id="businessType"
                             name="businessType"
                             value={formData.businessType}
                             onChange={handleInputChange}
-                            placeholder="e.g., Retail, Restaurant, Services"
+                            className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.businessType ? "border-destructive" : ""}`}
                             disabled={loading}
-                        />
+                        >
+                            <option value="">Select business type</option>
+                            <option value="Freelancer or Service">Freelancer or Service</option>
+                            <option value="Retail">Retail</option>
+                        </select>
+                        {errors.businessType && (
+                            <p className="text-destructive text-sm">{errors.businessType}</p>
+                        )}
                     </div>
 
                     <Button type="submit" className="w-full" disabled={loading}>

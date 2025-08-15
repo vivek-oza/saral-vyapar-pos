@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
+import { filterByBusinessType, normalizeBusinessTypeForDisplay } from '../../utils/businessTypeUtils';
 import {
     LogOut,
     Menu,
@@ -49,64 +50,76 @@ const Navbar = () => {
         closeMenu();
     };
 
-    const menuItems = [
+    const allMenuItems = [
         {
             id: 'modules',
             title: t('nav.moduleSelection'),
             icon: Grid3X3,
             path: `/${user?.shop?.username}/modules`,
-            description: t('desc.moduleSelection')
+            description: t('desc.moduleSelection'),
+            businessTypes: ['Freelancer or Service', 'Retail']
         },
-        {
-            id: 'dashboard',
-            title: t('nav.dashboard'),
-            icon: LayoutDashboard,
-            path: `/${user?.shop?.username}/dashboard`,
-            description: t('desc.dashboard')
-        },
+        // {
+        //     id: 'dashboard',
+        //     title: t('nav.dashboard'),
+        //     icon: LayoutDashboard,
+        //     path: `/${user?.shop?.username}/dashboard`,
+        //     description: t('desc.dashboard'),
+        //     businessTypes: ['Freelancer or Service', 'Retail']
+        // },
         {
             id: 'products',
             title: t('nav.products'),
-            icon: Package,
+            // icon: Package,
             path: `/${user?.shop?.username}/products`,
-            description: t('desc.products')
+            description: t('desc.products'),
+            businessTypes: ['Retail']
         },
         {
             id: 'inventory',
             title: t('nav.inventory'),
-            icon: Warehouse,
+            // icon: Warehouse,
             path: `/${user?.shop?.username}/inventory`,
-            description: t('desc.inventory')
+            description: t('desc.inventory'),
+            businessTypes: ['Retail']
         },
         {
             id: 'billing',
             title: t('nav.billing'),
-            icon: Receipt,
+            // icon: Receipt,
             path: `/${user?.shop?.username}/billing`,
-            description: t('desc.billing')
+            description: t('desc.billing'),
+            businessTypes: ['Freelancer or Service', 'Retail']
         },
         {
             id: 'reports',
             title: t('nav.reports'),
-            icon: BarChart3,
+            // icon: BarChart3,
             path: `/${user?.shop?.username}/reports`,
-            description: t('desc.reports')
+            description: t('desc.reports'),
+            businessTypes: ['Freelancer or Service', 'Retail']
         },
         {
             id: 'mobile-pos',
             title: t('nav.mobilePOS'),
-            icon: Smartphone,
+            // icon: Smartphone,
             path: `/${user?.shop?.username}/mobile-pos`,
-            description: t('desc.mobilePOS')
+            description: t('desc.mobilePOS'),
+            businessTypes: ['Retail']
         },
         {
             id: 'settings',
             title: t('nav.settings'),
-            icon: Settings,
+            // icon: Settings,
             path: `/${user?.shop?.username}/settings`,
-            description: t('desc.settings')
+            description: t('desc.settings'),
+            businessTypes: ['Freelancer or Service', 'Retail']
         }
     ];
+
+    // Filter menu items based on business type with backward compatibility
+    const businessType = user?.shop?.business_type;
+    const menuItems = filterByBusinessType(allMenuItems, businessType);
     // Language texts with colors for rotating display
     const languageTexts = [
         'Language',  // English
@@ -157,7 +170,7 @@ const Navbar = () => {
                         {/* Right side - Language switcher and user dropdown */}
                         <div className="flex items-center space-x-8">
                             {/* Language Switcher */}
-                            <div className="flex flex-row-reverse p-1 h-12 bg-gray-100 rounded-full justify-center items-center">
+                            {/* <div className="flex flex-row-reverse p-1 h-12 bg-gray-100 rounded-full justify-center items-center">
                                 <LanguageSwitcher />
                                 <RotatingText
                                     texts={languageTexts}
@@ -176,7 +189,7 @@ const Navbar = () => {
                                     animate={{ y: 0, opacity: 1 }}
                                     exit={{ y: -20, opacity: 0 }}
                                 />
-                            </div>
+                            </div> */}
                             {/* <div className="text-right hidden sm:block">
                                 <div className="text-sm font-medium">{user?.shop?.name || 'Shop'}</div>
                                 <div className="text-xs text-muted-foreground">{user?.email}</div>
@@ -204,14 +217,19 @@ const Navbar = () => {
                             {/* Dropdown Menu */}
                             {isDropdownOpen && (
                                 <div className="absolute border flex flex-col space-y-4 top-14 right-4 z-50 mt-2 w-48 rounded-md bg-card p-2 shadow-md">
-                                    <div className="text-sm font-medium">{t('nav.welcome')}, {user?.email}</div>
+                                    <div
+                                        className="text-sm font-medium">
+                                        {/* {t('nav.welcome')}, */}
+                                        {user?.email}{' '}
+                                        {user?.shop?.name ? `${user?.shop?.name}` : ''}
+                                    </div>
                                     <Button
                                         onClick={handleLogout}
                                         variant="outline"
                                         size="sm"
                                         className="gap-2 w-full sm:w-auto"
                                     >
-                                        <LogOut className="h-4 w-4" />
+                                        {/* <LogOut className="h-4 w-4" /> */}
                                         {t('nav.logout')}
                                     </Button>
                                 </div>
@@ -241,6 +259,9 @@ const Navbar = () => {
                             <div>
                                 <h2 className="font-semibold text-lg">{t('nav.navigation')}</h2>
                                 <p className="text-sm text-muted-foreground">{user?.shop?.name}</p>
+                                {user?.shop?.business_type && (
+                                    <p className="text-xs text-blue-600 font-medium">{normalizeBusinessTypeForDisplay(user.shop.business_type)} Business</p>
+                                )}
                             </div>
                         </div>
                         <Button
@@ -269,7 +290,7 @@ const Navbar = () => {
                                             : 'hover:bg-muted'
                                             }`}
                                     >
-                                        <IconComponent className="h-5 w-5 flex-shrink-0" />
+                                        {/* <IconComponent className="h-5 w-5 flex-shrink-0" /> */}
                                         <div className="flex-1 min-w-0">
                                             <div className="font-medium truncate">{item.title}</div>
                                             <div className={`text-sm truncate ${isActive ? 'text-primary-foreground/80' : 'text-muted-foreground'
@@ -296,7 +317,7 @@ const Navbar = () => {
                                 size="sm"
                                 className="gap-2 w-full sm:w-auto"
                             >
-                                <LogOut className="h-4 w-4" />
+                                {/* <LogOut className="h-4 w-4" /> */}
                                 {t('nav.logout')}
                             </Button>
                         </div>

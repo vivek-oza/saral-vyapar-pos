@@ -21,17 +21,17 @@ const Reports = () => {
                         onClick={handleBackToModules}
                         className="w-fit"
                     >
-                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        {/* <ArrowLeft className="mr-2 h-4 w-4" /> */}
                         <span className="hidden xs:inline">Back to </span>Modules
                     </Button>
                     <div className="flex items-center">
-                        <BarChart3 className="mr-3 h-6 w-6 text-orange-600" />
+                        {/* <BarChart3 className="mr-3 h-6 w-6 text-orange-600" /> */}
                         <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Reports & Analytics</h1>
                     </div>
                 </div>
 
                 <div className="bg-white rounded-lg shadow-sm border p-6 sm:p-8 text-center">
-                    <BarChart3 className="mx-auto h-12 sm:h-16 w-12 sm:w-16 text-orange-600 mb-4" />
+                    {/* <BarChart3 className="mx-auto h-12 sm:h-16 w-12 sm:w-16 text-orange-600 mb-4" /> */}
                     <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
                         Reports & Analytics Module
                     </h2>
