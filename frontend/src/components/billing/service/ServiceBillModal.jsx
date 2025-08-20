@@ -9,7 +9,7 @@ import {
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { Textarea } from "../../ui/textarea";
-import { Plus, Trash2, Receipt } from "lucide-react";
+import { Plus, Trash2, BadgeIndianRupee } from "lucide-react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { serviceBillsAPI } from "../../../api/serviceBills";
 
@@ -181,7 +181,7 @@ const ServiceBillModal = ({ onBillCreated, trigger }) => {
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-gray-700">
-            <Receipt className="h-5 w-5" />
+            <BadgeIndianRupee className="h-5 w-5" />
             Create Service Bill
           </DialogTitle>
         </DialogHeader>
@@ -201,9 +201,8 @@ const ServiceBillModal = ({ onBillCreated, trigger }) => {
                   value={formData.customer.name}
                   onChange={(e) => handleCustomerChange("name", e.target.value)}
                   placeholder="Enter client name"
-                  className={`border-gray-300 focus:border-gray-500 focus:ring-gray-500 ${
-                    errors["customer.name"] ? "border-red-300" : ""
-                  }`}
+                  className={`border-gray-300 focus:border-gray-500 focus:ring-gray-500 ${errors["customer.name"] ? "border-red-300" : ""
+                    }`}
                 />
                 {errors["customer.name"] && (
                   <p className="text-red-500 text-sm">
@@ -221,9 +220,8 @@ const ServiceBillModal = ({ onBillCreated, trigger }) => {
                     handleCustomerChange("phone", e.target.value)
                   }
                   placeholder="Enter phone number"
-                  className={`border-gray-300 focus:border-gray-500 focus:ring-gray-500 ${
-                    errors["customer.phone"] ? "border-red-300" : ""
-                  }`}
+                  className={`border-gray-300 focus:border-gray-500 focus:ring-gray-500 ${errors["customer.phone"] ? "border-red-300" : ""
+                    }`}
                 />
                 {errors["customer.phone"] && (
                   <p className="text-red-500 text-sm">
@@ -298,11 +296,10 @@ const ServiceBillModal = ({ onBillCreated, trigger }) => {
                       )
                     }
                     placeholder="Describe the service provided"
-                    className={`border-gray-300 focus:border-gray-500 focus:ring-gray-500 ${
-                      errors[`serviceItems.${index}.description`]
-                        ? "border-red-300"
-                        : ""
-                    }`}
+                    className={`border-gray-300 focus:border-gray-500 focus:ring-gray-500 ${errors[`serviceItems.${index}.description`]
+                      ? "border-red-300"
+                      : ""
+                      }`}
                   />
                   {errors[`serviceItems.${index}.description`] && (
                     <p className="text-red-500 text-sm">
@@ -324,11 +321,10 @@ const ServiceBillModal = ({ onBillCreated, trigger }) => {
                         handleServiceItemChange(index, "amount", e.target.value)
                       }
                       placeholder="0.00"
-                      className={`border-gray-300 focus:border-gray-500 focus:ring-gray-500 ${
-                        errors[`serviceItems.${index}.amount`]
-                          ? "border-red-300"
-                          : ""
-                      }`}
+                      className={`border-gray-300 focus:border-gray-500 focus:ring-gray-500 ${errors[`serviceItems.${index}.amount`]
+                        ? "border-red-300"
+                        : ""
+                        }`}
                     />
                     {formData.serviceItems.length > 1 && (
                       <Button

@@ -95,6 +95,14 @@ export const serviceBillsAPI = {
             body: JSON.stringify({ paymentMode }),
         });
     },
+
+    // Update full bill (alias for updateServiceBill for consistency)
+    updateBill: async (id, updateData) => {
+        return makeRequest(`/service-bills/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(updateData),
+        });
+    },
 };
 
 export default serviceBillsAPI;
