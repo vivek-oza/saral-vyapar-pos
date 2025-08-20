@@ -1,9 +1,12 @@
+import React from 'react'
 import { useAuth } from '../../../contexts/AuthContext'
 import { useEffect, useState, useRef } from 'react'
+import { useReactToPrint } from 'react-to-print'
 
 const PrintableBill = ({ bill, onClose }) => {
     const { user } = useAuth()
     const [template, setTemplate] = useState('default') // 'default' | 'compact' | 'gst'
+    const printContentRef = useRef(null)
 
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('en-GB')
@@ -18,28 +21,14 @@ const PrintableBill = ({ bill, onClose }) => {
         }).format(amount || 0)
     }
 
-    // Thumbnails will use the same live bill/user data to keep previews consistent.
+    const shopId = (user?.shop?.username || user?.shop?.name || 'invoice').toString().replace(/\s+/g, '')
+    const invoiceNo = bill?.invoiceNumber || 'invoice'
+    const title = `${shopId}_${invoiceNo}`
 
-    const handlePrint = () => {
-        // Hide the modal controls and print the current page
-        const controls = document.querySelector('.print-controls')
-        if (controls) controls.style.display = 'none'
-
-        // Set a meaningful print title for exported PDF/print job
-        const prevTitle = document.title
-        const shopId = (user?.shop?.username || user?.shop?.name || 'invoice').toString().replace(/\s+/g, '')
-        const invoiceNo = bill?.invoiceNumber || 'invoice'
-        document.title = `${shopId}_${invoiceNo}`
-
-        // Trigger print
-        window.print()
-
-        // Restore controls after print dialog
-        setTimeout(() => {
-            if (controls) controls.style.display = 'flex'
-            document.title = prevTitle
-        }, 100)
-    }
+    const handlePrint = useReactToPrint({
+        content: () => printContentRef.current,
+        documentTitle: title,
+    });
 
     // Handle ESC key to close modal
     useEffect(() => {
@@ -60,10 +49,18 @@ const PrintableBill = ({ bill, onClose }) => {
             <style>{`
                 /* Screen preview improvements */
                 @media screen {
-                    #print-root { display: flex; justify-content: center; padding: 24px; }
+                    #print-root { display: flex; justify-content: center; align-items: flex-start; padding: 0; width: 100%; }
                     .a4 { width: 794px; /* ~A4 @96dpi */ background: #fff; }
-                    .receipt { width: 72mm; background: #fff; }
-                    .printable-content { margin: 0 auto; }
+                    .receipt { width: 80mm; background: #fff; }
+                    .printable-content { margin: 0 auto; padding: 0; }
+                    /* Tighter screen styles for compact receipt */
+                    .receipt.printable-content { box-sizing: border-box; font-size: 10px; line-height: 1.25; width: 80mm; color: #000; padding: 0 2mm; }
+                    .receipt.printable-content table { width: 100%; border-collapse: collapse; }
+                    .receipt.printable-content th,
+                    .receipt.printable-content td { padding: 2px 0; }
+                    .receipt.printable-content th { border-bottom: 1px solid #000; font-weight: 700; text-transform: uppercase; font-size: 10px; }
+                    .receipt.printable-content td:last-child { font-variant-numeric: tabular-nums; }
+                    .receipt.printable-content .hr { border-top: 1px dashed #000; margin: 6px 0; }
                     /* Thumbnails: single A4-ratio container. Inner content is dynamically scaled to fit */
                     .thumb { border: 1px dashed #d1d5db; background: #fff; border-radius: 8px; padding: 8px; overflow: hidden; }
                     .thumb-a4 { width: 200px; height: 284px; /* A4 aspect ratio (1:1.414) */ position: relative; }
@@ -75,38 +72,39 @@ const PrintableBill = ({ bill, onClose }) => {
                 }
 
                 @media print {
-                    /* Ensure only this overlay prints */
-                    body > *:not(.print-overlay-root) { display: none !important; }
-                    /* Hide everything except our print root to avoid duplicates */
-                    html, body { padding: 0 !important; margin: 0 !important; height: auto !important; }
-                    body * { visibility: hidden !important; }
-                    #print-root, #print-root * { visibility: visible !important; }
-                    #print-root { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; margin: 0 !important; padding: 0 !important; display: block !important; overflow: visible !important; }
-                    .print-controls { display: none !important; }
-                    .printable-bill-modal { box-shadow: none !important; background: #fff !important; }
-
-                    /* Common print typography */
-                    .printable-content { padding: 20px !important; color: #000 !important; }
-                    .print-table { width: 100%; border-collapse: collapse; }
-                    .print-table th, .print-table td { border: 1px solid #000 !important; }
-
-                    /* Page sizes by template */
+                    /* react-to-print handles most of this, but we can add page-size specifics */
                     ${template === 'default' ? `@page { size: A4; margin: 0.5in; }` : ''}
                     ${template === 'gst' ? `@page { size: A4; margin: 0.6in; }` : ''}
-                    ${template === 'compact' ? `@page { size: 80mm auto; margin: 5mm; }` : ''}
+                    ${template === 'compact' ? `@page { size: 80mm auto; margin: 0; }` : ''}
+
+                    /* Ensure fonts and colors are print-friendly if needed */
+                    .printable-content { color: #000 !important; }
+
+                    /* Extra-tight styles when printing compact receipt */
+                    ${template === 'compact' ? `
+                    .receipt.printable-content { box-sizing: border-box; font-size: 10px; line-height: 1.25; padding: 0 2mm; width: 80mm; }
+                    .receipt.printable-content table { width: 100%; border-collapse: collapse; }
+                    .receipt.printable-content th,
+                    .receipt.printable-content td { padding: 2px 0; }
+                    .receipt.printable-content th { border-bottom: 1px solid #000; font-weight: 700; text-transform: uppercase; font-size: 10px; }
+                    .receipt.printable-content .border-t { border-top: 1px solid #000; }
+                    .receipt.printable-content .border-y { border-top: 1px solid #000; border-bottom: 1px solid #000; }
+                    .receipt.printable-content td:last-child { font-variant-numeric: tabular-nums; }
+                    .receipt.printable-content .hr { border-top: 1px dashed #000; margin: 4px 0; }
+                    ` : ''}
                 }
             `}</style>
 
-            <div className="print-overlay-root fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                <div className="printable-bill-modal bg-white rounded-lg max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="print-overlay-root fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-1 md:p-4 z-50">
+                <div className="printable-bill-modal bg-white rounded-lg w-[98vw] md:w-full md:max-w-6xl max-h-[82vh] md:max-h-[88vh] overflow-y-auto shadow-2xl">
                     {/* Print Controls - Hidden in print */}
-                    <div className="print-controls w-full p-4 border-b bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
+                    <div className="print-controls px-3 md:px-4 py-2 md:py-3 border-b bg-gradient-to-r w-full from-green-50 to-emerald-50 border-green-200">
                         <div className="flex flex-col gap-3">
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-center w-full">
                                 <h2 className="text-lg font-semibold text-green-800">Invoice Preview</h2>
                                 <div className="flex gap-2">
                                     <button
-                                        onClick={handlePrint}
+                                        onClick={() => handlePrint(() => printContentRef.current)}
                                         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-md"
                                     >
                                         Print Invoice
@@ -120,7 +118,7 @@ const PrintableBill = ({ bill, onClose }) => {
                                 </div>
                             </div>
                             {/* Template selector */}
-                            <div className="grid grid-cols-3 gap-3">
+                            <div className="hidden sm:grid grid-cols-3 gap-3 w-full">
                                 {[
                                     { id: 'default', name: 'Default', desc: 'A4, detailed' },
                                     { id: 'compact', name: 'Compact Slip', desc: '80mm receipt' },
@@ -142,21 +140,53 @@ const PrintableBill = ({ bill, onClose }) => {
                                     </button>
                                 ))}
                             </div>
+                            {/* Tiny dummy preview note for phones */}
+                            <div className="sm:hidden text-xs text-gray-600 bg-white/70 border rounded p-2">Preview minimized on small screens. You can still print; the output will be full size.</div>
                         </div>
                     </div>
 
                     {/* Printable Content Root */}
-                    <div id="print-root">
+                                        {/* Visible Preview Area */}
+                    <div id="preview-root" className="w-full hidden sm:flex justify-center">
                         {template === 'default' && (
-                            <DefaultTemplate bill={bill} user={user} formatDate={formatDate} formatCurrency={formatCurrency} />
+                            <div id="print-content" className="a4">
+                                <DefaultTemplate bill={bill} user={user} formatDate={formatDate} formatCurrency={formatCurrency} />
+                            </div>
                         )}
                         {template === 'compact' && (
-                            <CompactTemplate bill={bill} user={user} formatDate={formatDate} formatCurrency={formatCurrency} />
+                            <div id="print-content" className="receipt">
+                                <CompactTemplate bill={bill} user={user} formatDate={formatDate} formatCurrency={formatCurrency} />
+                            </div>
                         )}
                         {template === 'gst' && (
-                            <GSTTemplate bill={bill} user={user} formatDate={formatDate} formatCurrency={formatCurrency} />
+                            <div id="print-content" className="a4">
+                                <GSTTemplate bill={bill} user={user} formatDate={formatDate} formatCurrency={formatCurrency} />
+                            </div>
                         )}
                     </div>
+                                        {/* Hidden component for printing (kept off-screen so it's in the DOM) */}
+                    <div style={{ position: 'absolute', left: '-10000px', top: 0 }}>
+                        <div ref={printContentRef}>
+                            {template === 'default' && (
+                                <div className="a4 printable-content">
+                                    <DefaultTemplate bill={bill} user={user} formatDate={formatDate} formatCurrency={formatCurrency} />
+                                </div>
+                            )}
+                            {template === 'compact' && (
+                                <div className="receipt printable-content">
+                                    <CompactTemplate bill={bill} user={user} formatDate={formatDate} formatCurrency={formatCurrency} />
+                                </div>
+                            )}
+                            {template === 'gst' && (
+                                <div className="a4 printable-content">
+                                    <GSTTemplate bill={bill} user={user} formatDate={formatDate} formatCurrency={formatCurrency} />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Placeholder on very small screens to avoid heavy rendering */}
+                    <div className="sm:hidden p-3 text-center text-sm text-gray-600">Preview hidden on small screens for performance. Use the Print button to generate the full invoice.</div>
                 </div>
             </div>
         </>
@@ -290,40 +320,40 @@ const DefaultTemplate = ({ bill, user, formatDate, formatCurrency }) => (
 )
 
 const CompactTemplate = ({ bill, user, formatDate, formatCurrency }) => (
-    <div className="receipt printable-content text-[11px] leading-tight">
-        <div className="text-center mb-2">
-            <div className="text-base font-bold">{user?.shop?.name || 'Business Name'}</div>
-            {user?.shop?.phone && (<div className="text-xs">Ph: {user?.shop?.phone}</div>)}
+    <div className="receipt printable-content text-[10px] leading-[1.2]">
+        <div className="text-center mb-1">
+            <div className="text-sm font-bold">{user?.shop?.name || 'Business Name'}</div>
+            {user?.shop?.phone && (<div className="text-[10px]">Ph: {user?.shop?.phone}</div>)}
         </div>
-        <div className="mb-2 text-xs">
-            <div className="flex justify-between"><span>Invoice:</span><span>{bill.invoiceNumber}</span></div>
+        <div className="mb-1 text-[10px]">
+            <div className="flex justify-between"><span>Inv:</span><span>{bill.invoiceNumber}</span></div>
             <div className="flex justify-between"><span>Date:</span><span>{formatDate(bill.createdAt)}</span></div>
-            <div className="flex justify-between"><span>Customer:</span><span>{bill.customer.name}</span></div>
+            <div className="flex justify-between"><span>Cust:</span><span>{bill.customer.name}</span></div>
         </div>
-        <table className="w-full text-xs">
+        <table className="w-full text-[10px]">
             <thead>
                 <tr>
-                    <th className="border-y py-1 text-left">Item</th>
-                    <th className="border-y py-1 text-right">Amt</th>
+                    <th className="border-y py-[2px] text-left">Item</th>
+                    <th className="border-y py-[2px] text-right">Amt</th>
                 </tr>
             </thead>
             <tbody>
                 {bill.serviceItems.map((item, idx) => (
                     <tr key={idx}>
-                        <td className="py-1 pr-2">{item.description}</td>
-                        <td className="py-1 text-right">{formatCurrency(item.amount)}</td>
+                        <td className="py-[2px] pr-2">{item.description}</td>
+                        <td className="py-[2px] text-right">{formatCurrency(item.amount)}</td>
                     </tr>
                 ))}
             </tbody>
         </table>
-        <div className="mt-2 border-t pt-1 flex justify-between font-semibold">
+        <div className="mt-1 border-t pt-1 flex justify-between font-semibold text-[11px]">
             <span>Total</span>
             <span>{formatCurrency(bill.totalAmount)}</span>
         </div>
         {bill.paymentMode && bill.paymentMode !== 'Pending' && (
-            <div className="mt-1 text-xs">Mode: {bill.paymentMode}</div>
+            <div className="mt-1 text-[10px]">Mode: {bill.paymentMode}</div>
         )}
-        <div className="mt-2 text-center text-[10px]">Thank you! Visit again.</div>
+        <div className="mt-1 text-center text-[10px]">Thank you! Visit again.</div>
         <div className="mt-1 text-center text-[10px] font-medium">This is a legitimate bill. Please pay on time.</div>
     </div>
 )
