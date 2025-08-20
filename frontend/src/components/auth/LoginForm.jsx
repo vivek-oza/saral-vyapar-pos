@@ -140,11 +140,11 @@ const LoginForm = () => {
                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 disabled={loading}
               >
-                {/* {showPassword ? (
+                {showPassword ? (
                   <EyeOff className="h-4 w-4 text-gray-400" />
                 ) : (
                   <Eye className="h-4 w-4 text-gray-400" />
-                )} */}
+                )}
               </button>
             </div>
             {errors.password && (

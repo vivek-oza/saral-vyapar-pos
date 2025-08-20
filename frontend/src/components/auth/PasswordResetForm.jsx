@@ -291,11 +291,11 @@ const PasswordResetForm = ({
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={loading}
               >
-                {/* {showPassword ? (
+                {showPassword ? (
                   <EyeOff className="h-4 w-4" />
                 ) : (
                   <Eye className="h-4 w-4" />
-                )} */}
+                )}
               </Button>
             </div>
             <PasswordStrengthIndicator password={formData.password} />
@@ -324,11 +324,11 @@ const PasswordResetForm = ({
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 disabled={loading}
               >
-                {/* {showConfirmPassword ? (
+                {showConfirmPassword ? (
                   <EyeOff className="h-4 w-4" />
                 ) : (
                   <Eye className="h-4 w-4" />
-                )} */}
+                )}
               </Button>
             </div>
           </div>
