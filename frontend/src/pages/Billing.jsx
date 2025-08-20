@@ -4,7 +4,7 @@ import { Button } from "../components/ui/button";
 import Layout from "../components/layout/Layout";
 import ServiceBillingInterface from "../components/billing/service/ServiceBillingInterface";
 import { isServiceBusiness } from "../utils/businessTypeUtils";
-import { ArrowLeft, Receipt } from "lucide-react";
+import { ArrowLeft, BadgeIndianRupee } from "lucide-react";
 
 const Billing = () => {
   const navigate = useNavigate();
@@ -45,14 +45,14 @@ const Billing = () => {
               <span className="hidden xs:inline">Back to </span>Modules
             </Button>
             <div className="flex items-center">
-              <Receipt className="mr-3 h-6 w-6 text-purple-600" />
+              <BadgeIndianRupee className="mr-3 h-6 w-6 text-purple-600" />
               <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
                 Retail Billing System
               </h1>
             </div>
           </div>
           <div className="bg-white rounded-lg shadow-sm border p-6 sm:p-8 text-center">
-            <Receipt className="mx-auto h-12 sm:h-16 w-12 sm:w-16 text-purple-600 mb-4" />
+            <BadgeIndianRupee className="mx-auto h-12 sm:h-16 w-12 sm:w-16 text-purple-600 mb-4" />
             <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
               Retail Billing System Module
             </h2>

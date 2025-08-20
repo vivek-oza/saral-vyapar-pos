@@ -4,14 +4,19 @@ import { Button } from "../../ui/button"
 import { Input } from "../../ui/input"
 import { Badge } from "../../ui/badge"
 import PrintableBill from "./PrintableBill"
+import BillEditModal from "./BillEditModal"
 import { serviceBillsAPI } from '../../../api/serviceBills'
-import { Search, Printer, ChevronLeft, ChevronRight, Receipt } from "lucide-react"
+import { Search, Printer, ChevronLeft, ChevronRight, BadgeIndianRupee, Edit, Save, X, FileEdit } from "lucide-react"
 
 const BillHistoryTable = ({ bills, loading, onBillUpdated, onRefresh }) => {
     const [searchTerm, setSearchTerm] = useState('')
     const [statusFilter, setStatusFilter] = useState('all')
     const [currentPage, setCurrentPage] = useState(1)
     const [printBill, setPrintBill] = useState(null)
+    const [editingBill, setEditingBill] = useState(null)
+    const [editFormData, setEditFormData] = useState({})
+    const [saving, setSaving] = useState(false)
+    const [fullEditBill, setFullEditBill] = useState(null)
     const itemsPerPage = 10
 
     const formatDate = (dateString) => {
@@ -27,21 +32,92 @@ const BillHistoryTable = ({ bills, loading, onBillUpdated, onRefresh }) => {
         }).format(amount || 0)
     }
 
-    const handleStatusChange = async (billId, newStatus) => {
-        try {
-            const response = await serviceBillsAPI.updateBillStatus(billId, newStatus)
-            onBillUpdated(response.bill)
-        } catch (error) {
-            console.error('Error updating bill status:', error)
+    const startEditing = (bill) => {
+        setEditingBill(bill._id)
+        setEditFormData({
+            status: bill.status,
+            paymentMode: bill.paymentMode,
+            customer: { ...bill.customer },
+            serviceItems: [...bill.serviceItems],
+            totalAmount: bill.totalAmount
+        })
+    }
+
+    const cancelEditing = () => {
+        setEditingBill(null)
+        setEditFormData({})
+    }
+
+    const handleEditChange = (field, value) => {
+        setEditFormData(prev => ({
+            ...prev,
+            [field]: value
+        }))
+    }
+
+    const handleCustomerEditChange = (field, value) => {
+        setEditFormData(prev => ({
+            ...prev,
+            customer: {
+                ...prev.customer,
+                [field]: value
+            }
+        }))
+    }
+
+    const handleServiceItemEditChange = (index, field, value) => {
+        setEditFormData(prev => ({
+            ...prev,
+            serviceItems: prev.serviceItems.map((item, i) =>
+                i === index ? { ...item, [field]: value } : item
+            )
+        }))
+    }
+
+    const addServiceRow = () => {
+        setEditFormData(prev => ({
+            ...prev,
+            serviceItems: [
+                ...prev.serviceItems,
+                {
+                    date: new Date().toISOString().split('T')[0],
+                    description: '',
+                    amount: 0
+                }
+            ]
+        }))
+    }
+
+    const removeServiceRow = (index) => {
+        if (editFormData.serviceItems.length > 1) {
+            setEditFormData(prev => ({
+                ...prev,
+                serviceItems: prev.serviceItems.filter((_, i) => i !== index)
+            }))
         }
     }
 
-    const handlePaymentModeChange = async (billId, newPaymentMode) => {
+    const calculateEditTotal = () => {
+        return editFormData.serviceItems?.reduce((total, item) => {
+            return total + (parseFloat(item.amount) || 0)
+        }, 0) || 0
+    }
+
+    const saveChanges = async () => {
+        setSaving(true)
         try {
-            const response = await serviceBillsAPI.updatePaymentMode(billId, newPaymentMode)
+            const updatedData = {
+                ...editFormData,
+                totalAmount: calculateEditTotal()
+            }
+            const response = await serviceBillsAPI.updateBill(editingBill, updatedData)
             onBillUpdated(response.bill)
+            setEditingBill(null)
+            setEditFormData({})
         } catch (error) {
-            console.error('Error updating payment mode:', error)
+            console.error('Error updating bill:', error)
+        } finally {
+            setSaving(false)
         }
     }
 
@@ -76,11 +152,18 @@ const BillHistoryTable = ({ bills, loading, onBillUpdated, onRefresh }) => {
                     onClose={() => setPrintBill(null)}
                 />
             )}
+            {fullEditBill && (
+                <BillEditModal
+                    bill={fullEditBill}
+                    onClose={() => setFullEditBill(null)}
+                    onBillUpdated={onBillUpdated}
+                />
+            )}
             <Card className="bg-white shadow-md border-green-100">
                 <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-100">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <CardTitle className="text-green-800 flex items-center gap-2">
-                            <Receipt className="h-5 w-5" />
+                            <BadgeIndianRupee className="h-5 w-5" />
                             Bill History
                         </CardTitle>
                         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
@@ -146,31 +229,83 @@ const BillHistoryTable = ({ bills, loading, onBillUpdated, onRefresh }) => {
                                                         {formatCurrency(bill.totalAmount)}
                                                     </td>
                                                     <td className="py-3 px-2">
-                                                        <select
-                                                            value={bill.status}
-                                                            onChange={(e) => handleStatusChange(bill._id, e.target.value)}
-                                                            className="text-sm border rounded px-2 py-1"
-                                                        >
-                                                            <option value="Pending">Pending</option>
-                                                            <option value="Received">Received</option>
-                                                        </select>
+                                                        {editingBill === bill._id ? (
+                                                            <select
+                                                                value={editFormData.status}
+                                                                onChange={(e) => handleEditChange('status', e.target.value)}
+                                                                className="text-sm border rounded px-2 py-1"
+                                                            >
+                                                                <option value="Pending">Pending</option>
+                                                                <option value="Received">Received</option>
+                                                            </select>
+                                                        ) : (
+                                                            <Badge variant={bill.status === 'Received' ? 'default' : 'destructive'}>
+                                                                {bill.status}
+                                                            </Badge>
+                                                        )}
                                                     </td>
                                                     <td className="py-3 px-2">
-                                                        <Input
-                                                            value={bill.paymentMode}
-                                                            onChange={(e) => handlePaymentModeChange(bill._id, e.target.value)}
-                                                            className="text-sm w-24"
-                                                            placeholder="Payment mode"
-                                                        />
+                                                        {editingBill === bill._id ? (
+                                                            <Input
+                                                                value={editFormData.paymentMode}
+                                                                onChange={(e) => handleEditChange('paymentMode', e.target.value)}
+                                                                className="text-sm w-24"
+                                                                placeholder="Payment mode"
+                                                            />
+                                                        ) : (
+                                                            <span className="text-sm">{bill.paymentMode}</span>
+                                                        )}
                                                     </td>
                                                     <td className="py-3 px-2">
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() => handlePrint(bill)}
-                                                        >
-                                                            <Printer className="h-4 w-4" />
-                                                        </Button>
+                                                        <div className="flex gap-1">
+                                                            {editingBill === bill._id ? (
+                                                                <>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        onClick={saveChanges}
+                                                                        disabled={saving}
+                                                                        title="Save quick changes"
+                                                                    >
+                                                                        <Save className="h-4 w-4" />&nbsp;Save
+                                                                    </Button>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        onClick={cancelEditing}
+                                                                        disabled={saving}
+                                                                    >
+                                                                        <X className="h-4 w-4" />&nbsp;Cancel
+                                                                    </Button>
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        onClick={() => startEditing(bill)}
+                                                                        title="Quick edit status & payment"
+                                                                    >
+                                                                        <Edit className="h-4 w-4" />{" "}&nbsp;Status
+                                                                    </Button>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        onClick={() => setFullEditBill(bill)}
+                                                                        title="Full bill edit"
+                                                                    >
+                                                                        <FileEdit className="h-4 w-4" />&nbsp;Bill
+                                                                    </Button>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        onClick={() => handlePrint(bill)}
+                                                                    >
+                                                                        <Printer className="h-4 w-4" />
+                                                                    </Button>
+                                                                </>
+                                                            )}
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -198,27 +333,70 @@ const BillHistoryTable = ({ bills, loading, onBillUpdated, onRefresh }) => {
                                             </div>
                                         </div>
                                         <div className="flex flex-col sm:flex-row gap-2">
-                                            <select
-                                                value={bill.status}
-                                                onChange={(e) => handleStatusChange(bill._id, e.target.value)}
-                                                className="text-sm border rounded px-2 py-1 flex-1"
-                                            >
-                                                <option value="Pending">Pending</option>
-                                                <option value="Received">Received</option>
-                                            </select>
-                                            <Input
-                                                value={bill.paymentMode}
-                                                onChange={(e) => handlePaymentModeChange(bill._id, e.target.value)}
-                                                className="text-sm flex-1"
-                                                placeholder="Payment mode"
-                                            />
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => handlePrint(bill)}
-                                            >
-                                                <Printer className="h-4 w-4" />
-                                            </Button>
+                                            {editingBill === bill._id ? (
+                                                <>
+                                                    <select
+                                                        value={editFormData.status}
+                                                        onChange={(e) => handleEditChange('status', e.target.value)}
+                                                        className="text-sm border rounded px-2 py-1 flex-1"
+                                                    >
+                                                        <option value="Pending">Pending</option>
+                                                        <option value="Received">Received</option>
+                                                    </select>
+                                                    <Input
+                                                        value={editFormData.paymentMode}
+                                                        onChange={(e) => handleEditChange('paymentMode', e.target.value)}
+                                                        className="text-sm flex-1"
+                                                        placeholder="Payment mode"
+                                                    />
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={saveChanges}
+                                                        disabled={saving}
+                                                    >
+                                                        <Save className="h-4 w-4" />&nbsp;Save
+                                                    </Button>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={cancelEditing}
+                                                        disabled={saving}
+                                                    >
+                                                        <X className="h-4 w-4" />&nbsp;Cancel
+                                                    </Button>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Badge variant={bill.status === 'Received' ? 'default' : 'destructive'} className="flex-1">
+                                                        {bill.status}
+                                                    </Badge>
+                                                    <span className="text-sm flex-1">{bill.paymentMode}</span>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => startEditing(bill)}
+                                                        title="Quick edit"
+                                                    >
+                                                        <Edit className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => setFullEditBill(bill)}
+                                                        title="Full edit"
+                                                    >
+                                                        <FileEdit className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => handlePrint(bill)}
+                                                    >
+                                                        <Printer className="h-4 w-4" />
+                                                    </Button>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                 ))}

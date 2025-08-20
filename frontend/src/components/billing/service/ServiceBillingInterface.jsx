@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { serviceBillsAPI } from "../../../api/serviceBills";
 import { Button } from "../../ui/button";
-import { Plus, Receipt, RefreshCw } from "lucide-react";
+import { Plus, BadgeIndianRupee, RefreshCw } from "lucide-react";
 import DashboardCards from "./DashboardCards";
 import ServiceBillModal from "./ServiceBillModal";
 import BillHistoryTable from "./BillHistoryTable";
@@ -71,7 +71,7 @@ const ServiceBillingInterface = () => {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-gray-100 rounded-lg">
-                <Receipt className="h-6 w-6 text-gray-600" />
+                <BadgeIndianRupee className="h-6 w-6 text-gray-600" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">
